@@ -1,0 +1,23 @@
+﻿<Window
+    xmlns="https://github.com/avaloniaui"
+    MinWidth="500"
+    MinHeight="300">
+    <Grid Margin="7">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <TextBlock Margin="0,6,0,0">Selected Pack:</TextBlock>
+            <DropDown
+                Margin="10,0,0,0"
+                Items="{Binding Path=Packs}"
+                SelectedItem="{Binding Path=SelectedPack}" />
+        </StackPanel>
+        <ListBox
+            Grid.Row="1"
+            Margin="0,5"
+            Items="{Binding Path=Phrases}" />
+    </Grid>
+</Window>
