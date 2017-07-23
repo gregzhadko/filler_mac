@@ -8,6 +8,18 @@ namespace UIApp
 {
     public class EditingViewModel : ReactiveObject
     {
+        private IPackService _service = new PackService();
+
+        public EditingViewModel(PhraseItem phrase)
+        {
+            Phrase = phrase;
+            SaveCommand = ReactiveCommand.Create();
+            SaveCommand.Subscribe(_ =>
+            {
+                
+            });
+        }
+
         private PhraseItem _phrase = new PhraseItem() {Complexity = 1, Description = "Bla bla bla", IsNew = true, Phrase = "Drune"};
 
         public PhraseItem Phrase
@@ -17,5 +29,7 @@ namespace UIApp
         }
 
         public Pack SelectedPack { get; set; }
+
+        private ReactiveCommand<object> SaveCommand { get; }
     }
 }

@@ -5,10 +5,15 @@
     <Grid Margin="7">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal">
+            <Button Command="{Binding NewPhraseCommand}" Content="New Phrase" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
             <TextBlock Margin="0,6,0,0">Selected Pack:</TextBlock>
             <DropDown
                 Margin="10,0,0,0"
@@ -16,8 +21,9 @@
                 SelectedItem="{Binding Path=SelectedPack}" />
         </StackPanel>
         <ListBox
-            Grid.Row="1"
+            Grid.Row="2"
             Margin="0,5"
+            FontSize="20"
             Items="{Binding Path=Phrases}" />
     </Grid>
 </Window>

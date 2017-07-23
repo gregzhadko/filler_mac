@@ -6,12 +6,12 @@ namespace UIApp
 {
     public class EditingView : Window
     {
-        public EditingView()
+        public EditingView(EditingViewModel viewModel)
         {
             this.InitializeComponent();
             this.AttachDevTools();
 
-            DataContext = new EditingViewModel();
+            DataContext = viewModel;
         }
 
         private void InitializeComponent()

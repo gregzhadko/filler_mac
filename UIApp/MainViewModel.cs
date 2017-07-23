@@ -1,7 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 using Model;
 using ReactiveUI;
 
@@ -9,15 +9,14 @@ namespace UIApp
 {
     public class MainViewModel : ReactiveObject
     {
-        private readonly ObservableAsPropertyHelper<ReactiveList<PhraseItem>> _phrases;
-
         private readonly int _defaultPackId = 1;
+        private readonly ObservableAsPropertyHelper<ReactiveList<PhraseItem>> _phrases;
+        private readonly IPackService _service = new PackService();
         private bool _isInitializing;
 
         private ObservableCollection<Pack> _packs;
 
         private Pack _selectedPack;
-        private readonly IPackService _service = new PackService();
 
         public MainViewModel()
         {
@@ -30,6 +29,20 @@ namespace UIApp
                     return new ReactiveList<PhraseItem>(phrases);
                 })
                 .ToProperty(this, vm => vm.Phrases);
+
+            NewPhraseCommand = ReactiveCommand.Create();
+            NewPhraseCommand.Subscribe(_ =>
+            {
+                EditPhrase(new PhraseItem());
+            });
+        }
+
+        private void EditPhrase(PhraseItem phraseItem)
+        {
+            //TODO: Rewrite with DI
+            var editViewModel = new EditingViewModel(phraseItem);
+            var editView = new EditingView(editViewModel);
+            editView.ShowDialog();
         }
 
         public ReactiveList<PhraseItem> Phrases => _phrases.Value;
@@ -46,9 +59,10 @@ namespace UIApp
             set => this.RaiseAndSetIfChanged(ref _packs, value);
         }
 
+        public ReactiveCommand<object> NewPhraseCommand { get; }
+
         private void Init()
         {
-            _isInitializing = true;
             var packsTask = _service.GetAllPacksInfoAsync();
             Packs = new ObservableCollection<Pack>(packsTask.Result.OrderBy(p => p.Id));
 
@@ -58,8 +72,6 @@ namespace UIApp
             selectedPack.Phrases = packTask.Result.Phrases;
             selectedPack.Description = packTask.Result.Description;
             SelectedPack = selectedPack;
-
-            _isInitializing = false;
         }
     }
 }
