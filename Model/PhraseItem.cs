@@ -94,7 +94,7 @@ namespace Model
 
         public event Action RaiseUpdateAuthor;
 
-        public object Clone()
+        public PhraseItem Clone()
         {
             var phrase = new PhraseItem
             {

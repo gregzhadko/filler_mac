@@ -1,6 +1,7 @@
 using Model;
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -29,6 +30,29 @@ namespace ModelTests
             _service.DeletePhraseAsync(_testPackId, phrase.Phrase, _testAuthor).Wait();
             var phrases = _service.GetPackByIdAsync(_testPackId).Result.Phrases;
             Assert.IsFalse(phrases.Select(p => p.Phrase).Contains(phrase.Phrase));
+        }
+
+        [TestMethod]
+        public void AddDuplicationPhraseToTheSamePackTest()
+        {
+            var phrase = GeneratePhrase();
+            _service.AddPhraseAsync(_testPackId, phrase, _testAuthor).Wait();
+            _service.AddPhraseAsync(_testPackId, phrase, _testAuthor).Wait();
+            var phrases = _service.GetPackByIdAsync(_testPackId).Result.Phrases;
+            CollectionAssert.AllItemsAreUnique(phrases.Select(p => p.Phrase).ToList());
+        }
+
+        [TestMethod]
+        public void AddDuplicationPhraseToDifferentPackTest()
+        {
+            var existingPhrase = _service.GetPackByIdAsync(1).Result.Phrases.First();
+            var newPhrase = existingPhrase.Clone();
+
+            var result = _service.AddPhraseAsync(_testPackId, newPhrase, _testAuthor).Result;
+            Assert.AreEqual("Word is already added to pack 1", result.Trim());
+            var phrases = _service.GetPackByIdAsync(_testPackId).Result.Phrases;
+            CollectionAssert.AllItemsAreUnique(phrases.Select(p => p.Phrase).ToList());
+
         }
 
         private static PhraseItem GeneratePhrase()
