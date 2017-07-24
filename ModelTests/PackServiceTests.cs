@@ -1,30 +1,41 @@
-﻿using Model;
-using NUnit.Framework;
+using Model;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ModelTests
 {
-    [TestFixture]
+    [TestClass]
     public class PackServiceTests
     {
-        private IPackService _service = new PackService();
+        private readonly IPackService _service = new PackService();
         private int _testPackId = 20;
-        private string _testAuthor = "zhadko";
+        private static string _testAuthor = "zhadko";
         private static readonly Random Random = new Random();
 
-        [Test]
+        [TestInitialize]
+        public void Setup()
+        {
+            var pack = _service.GetPackByIdAsync(_testPackId).Result;
+            _service.DeletePhrasesAsync(_testPackId, pack.Phrases.Select(p => p.Phrase), _testAuthor);
+        }
+
+        [TestMethod]
         public void DeletePhraseAsyncTest()
         {
             var phrase = GeneratePhrase();
-            _service.AddPhraseAsync(_testPackId, phrase).Start();
-            _service.DeletePhraseAsync(_testPackId, phrase.Phrase, _testAuthor);
-
+            _service.AddPhraseAsync(_testPackId, phrase, _testAuthor).Wait();
+            _service.DeletePhraseAsync(_testPackId, phrase.Phrase, _testAuthor).Wait();
+            var phrases = _service.GetPackByIdAsync(_testPackId).Result.Phrases;
+            Assert.IsFalse(phrases.Select(p => p.Phrase).Contains(phrase.Phrase));
         }
 
         private static PhraseItem GeneratePhrase()
         {
-            return new PhraseItem { Phrase = RandomString(15), Description = RandomString(50), Complexity = Random.Next(1, 5) };
+            var phrase = new PhraseItem { Phrase = RandomString(15), Description = RandomString(50), Complexity = Random.Next(1, 5)};
+            phrase.UpdateAuthor(_testAuthor);
+            return phrase;
         }
 
         private static string RandomString(int length, string prefix = "")
@@ -35,3 +46,4 @@ namespace ModelTests
         }
     }
 }
+

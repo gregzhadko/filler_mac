@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace Model
 {
     public interface IPackService
     {
-        Task<string> AddPhraseAsync(int packId, PhraseItem phrase);
+        Task<string> AddPhraseAsync(int packId, PhraseItem phrase, string author);
         Task<string> DeletePhraseAsync(int packId, string phrase, string author);
         Task EditPackAsync(int id, string name, string description);
 
@@ -19,5 +20,6 @@ namespace Model
         Task<Pack> GetPackByIdAsync(int id);
 
         Task<List<PhraseEditInfo>> GetPackEditingInfoAsync(Dictionary<int, string> packDictionary);
+        Task<string[]> DeletePhrasesAsync(int packId, IEnumerable<string> phrases, [NotNull] string author);
     }
 }

@@ -24,15 +24,29 @@ namespace Model
             Password = settings[2];
         }
 
-        public Task<string> AddPhraseAsync(int packId, [NotNull]PhraseItem phrase)
+        public Task<string> AddPhraseAsync(int packId, [NotNull] PhraseItem phrase, string author)
         {
             return GetResponseAsync(
-                $"addPackWordDescription?id={packId}&word={phrase.Phrase}&description={phrase.Description}&level={phrase.Complexity}&author={phrase.ReviewedBy}",
+                $"addPackWordDescription?id={packId}&word={phrase.Phrase}&description={phrase.Description}&level={phrase.Complexity}&author={author}",
                 8091);
         }
 
         public Task<string> DeletePhraseAsync(int packId, [NotNull]string phrase, [NotNull]string author) => GetResponseAsync(
             $"removePackWord?id={packId}&word={phrase}&author={author}", 8091);
+
+        public Task<string[]> DeletePhrasesAsync(int packId, IEnumerable<string> phrases, [NotNull] string author)
+        {
+            var tasks = new List<Task<string>>();
+            foreach (var phrase in phrases)
+            {
+                var task = DeletePhraseAsync(packId, phrase, author);
+                tasks.Add(task);
+            }
+
+            var deletePhrasesAsync = Task.WhenAll(tasks);
+            deletePhrasesAsync.ConfigureAwait(false);
+            return deletePhrasesAsync;
+        }
 
         public async Task EditPackAsync(int id, [NotNull]string name, [NotNull]string description)
         {
@@ -115,7 +129,7 @@ namespace Model
 
         private static async Task<string> GetResponseAsync(string requestUriString, int port)
         {
-            var protocol = port == 8091 ? "https" : "http";
+            var protocol = "http";
             var request = WebRequest.Create($"{protocol}://{Url}:{port}/" + requestUriString);
 
             request.Credentials = new NetworkCredential(Username, Password);
