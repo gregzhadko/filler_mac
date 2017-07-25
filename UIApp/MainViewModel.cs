@@ -12,7 +12,6 @@ namespace UIApp
         private readonly int _defaultPackId = 1;
         private readonly ObservableAsPropertyHelper<ReactiveList<PhraseItem>> _phrases;
         private readonly IPackService _service = new PackService();
-        private bool _isInitializing;
 
         private ObservableCollection<Pack> _packs;
 

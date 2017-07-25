@@ -8,7 +8,7 @@ namespace UIApp
     {
         public MainWindow()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             this.AttachDevTools();
 
             DataContext = new MainViewModel();

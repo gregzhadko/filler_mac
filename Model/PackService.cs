@@ -24,17 +24,17 @@ namespace Model
             Password = settings[2];
         }
 
-        public Task<string> AddPhraseAsync(int packId, [NotNull] PhraseItem phrase, string author)
+        public Task<string> AddPhraseAsync(int packId, PhraseItem phrase, string author)
         {
             return GetResponseAsync(
                 $"addPackWordDescription?id={packId}&word={phrase.Phrase}&description={phrase.Description}&level={phrase.Complexity}&author={author}",
                 8091);
         }
 
-        public Task<string> DeletePhraseAsync(int packId, [NotNull]string phrase, [NotNull]string author) => GetResponseAsync(
+        public Task<string> DeletePhraseAsync(int packId, string phrase, string author) => GetResponseAsync(
             $"removePackWord?id={packId}&word={phrase}&author={author}", 8091);
 
-        public Task<string[]> DeletePhrasesAsync(int packId, IEnumerable<string> phrases, [NotNull] string author)
+        public Task<string[]> DeletePhrasesAsync(int packId, IEnumerable<string> phrases, string author)
         {
             var tasks = new List<Task<string>>();
             foreach (var phrase in phrases)
@@ -48,7 +48,7 @@ namespace Model
             return deletePhrasesAsync;
         }
 
-        public async Task EditPackAsync(int id, [NotNull]string name, [NotNull]string description)
+        public async Task EditPackAsync(int id, string name, string description)
         {
             if (id == 0)
             {
@@ -58,7 +58,7 @@ namespace Model
             await GetResponseAsync($"updatePackInfo?id={id}&name={name}&description={description}", 8091).ConfigureAwait(false);
         }
 
-        public async Task EditPhraseAsync(int packId, [NotNull]PhraseItem oldPhrase, [NotNull]PhraseItem newPhrase, [NotNull]string selectedAuthor)
+        public async Task EditPhraseAsync(int packId, PhraseItem oldPhrase, PhraseItem newPhrase, string selectedAuthor)
         {
             if (oldPhrase.Phrase != newPhrase.Phrase)
             {
@@ -75,7 +75,7 @@ namespace Model
             }
         }
 
-        public Task ReviewPhraseAsync(int packId, [NotNull]PhraseItem phrase, [NotNull]string reviewerName, State state)
+        public Task ReviewPhraseAsync(int packId, PhraseItem phrase, string reviewerName, State state)
         {
             return GetResponseAsync($"reviewPackWord?id={packId}&word={phrase.Phrase}&author={reviewerName}&state={(int)state}", 8091);
         }
@@ -157,7 +157,7 @@ namespace Model
 
         }
 
-        public async Task<List<PhraseEditInfo>> GetPackEditingInfoAsync([NotNull]Dictionary<int, string> packDictionary)
+        public async Task<List<PhraseEditInfo>> GetPackEditingInfoAsync(Dictionary<int, string> packDictionary)
         {
             var response = await GetResponseAsync("packEditingInfo", 8091).ConfigureAwait(false);
             var jArray = JArray.Parse(response);

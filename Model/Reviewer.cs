@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 
 namespace Model
 {
@@ -15,14 +12,9 @@ namespace Model
 
         public string Author { get; set; }
 
-        public State ReviewState
-        {
-            get => _reviewState;
-            set => _reviewState = value;
-        }
+        public State ReviewState { get; set; }
 
         public static readonly string[] DefaultReviewers = { "fomin", "tatarintsev", "sivykh", "zhadko" };
-        private State _reviewState;
 
         public static Reviewer[] NewReviewers() => DefaultReviewers.Select(r => new Reviewer(r)).ToArray();
     }

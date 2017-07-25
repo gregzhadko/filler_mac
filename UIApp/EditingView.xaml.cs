@@ -8,7 +8,7 @@ namespace UIApp
     {
         public EditingView(EditingViewModel viewModel)
         {
-            this.InitializeComponent();
+            InitializeComponent();
             this.AttachDevTools();
 
             DataContext = viewModel;
