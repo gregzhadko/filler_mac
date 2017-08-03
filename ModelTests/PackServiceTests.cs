@@ -31,16 +31,6 @@ namespace ModelTests
         }
 
         [TestMethod]
-        public void AddDuplicationPhraseToTheSamePackTest()
-        {
-            var phrase = GeneratePhrase();
-            _service.AddPhraseAsync(_testPackId, phrase, _testAuthor).Wait();
-            _service.AddPhraseAsync(_testPackId, phrase, _testAuthor).Wait();
-            var phrases = _service.GetPackByIdAsync(_testPackId).Result.Phrases;
-            CollectionAssert.AllItemsAreUnique(phrases.Select(p => p.Phrase).ToList());
-        }
-
-        [TestMethod]
         public void AddDuplicationPhraseToDifferentPackTest()
         {
             var existingPhrase = _service.GetPackByIdAsync(1).Result.Phrases.First();

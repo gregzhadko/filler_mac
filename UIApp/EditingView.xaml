@@ -13,17 +13,17 @@
             Grid.Row="0"
             Margin="5"
             Orientation="Horizontal">
-            <TextBlock>The phrase from pack</TextBlock>
+            <TextBlock>The phraseItem from pack</TextBlock>
             <TextBlock Text="{Binding SelectedPack}" />
         </StackPanel>
         <StackPanel
             Grid.Row="1"
             Margin="5"
             Orientation="Horizontal">
-            <TextBlock Margin="0,5,5,0">Phrase:</TextBlock>
-            <TextBox MinWidth="200" Text="{Binding Phrase.Phrase}" />
-            <TextBlock Margin="20,5,0,0">Phrase:</TextBlock>
-            <DropDown SelectedItem="{Binding Phrase.Complexity}">
+            <TextBlock Margin="0,5,5,0">PhraseItem:</TextBlock>
+            <TextBox MinWidth="200" Text="{Binding Phrase}" />
+            <TextBlock Margin="20,5,0,0">PhraseItem:</TextBlock>
+            <DropDown SelectedItem="{Binding Complexity}">
                 <DropDownItem>1</DropDownItem>
                 <DropDownItem>2</DropDownItem>
                 <DropDownItem>3</DropDownItem>
@@ -36,7 +36,7 @@
             Margin="5"
             Orientation="Vertical">
             <TextBlock>Description:</TextBlock>
-            <TextBox Text="{Binding Phrase.Description}" />
+            <TextBox Text="{Binding Description}" />
         </StackPanel>
         <StackPanel
             Grid.Row="3"

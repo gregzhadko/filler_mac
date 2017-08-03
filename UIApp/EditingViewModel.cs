@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Linq;
 using Model;
 using ReactiveUI;
 
@@ -6,25 +7,49 @@ namespace UIApp
 {
     public class EditingViewModel : ReactiveObject
     {
+        private readonly Pack _selectedPack;
+        private readonly string _author;
         private IPackService _service = new PackService();
+        private ObservableAsPropertyHelper<string> _phrase;
+        private ObservableAsPropertyHelper<int> _complexity;
+        private ObservableAsPropertyHelper<string> _description;
 
-        public EditingViewModel(PhraseItem phrase)
+        public EditingViewModel(Pack selectedPack, PhraseItem phraseItem, string author)
         {
-            Phrase = phrase;
+            _selectedPack = selectedPack;
+            _author = author;
+            
+            //TODO: Do we really need so complex initialization?
+            _phrase = this.WhenAnyValue(vm => vm.PhraseItem).Select(p => p.Phrase).ToProperty(this, vm => vm.Phrase);
+            _complexity = this.WhenAnyValue(vm => vm.PhraseItem).Select(p => (int)p.Complexity).ToProperty(this, vm => vm.Complexity);
+            _description = this.WhenAnyValue(vm => vm.PhraseItem).Select(p => p.Description).ToProperty(this, vm => vm.Description);
+
+            PhraseItem = phraseItem;
             SaveCommand = ReactiveCommand.Create();
             SaveCommand.Subscribe(_ =>
             {
-                
+                if (Save())
+                {
+                    Close();
+                }
             });
         }
 
-        private PhraseItem _phrase = new PhraseItem() {Complexity = 1, Description = "Bla bla bla", IsNew = true, Phrase = "Drune"};
-
-        public PhraseItem Phrase
+        private bool Save()
         {
-            get => _phrase;
-            set => this.RaiseAndSetIfChanged(ref _phrase, value);
+            return true;
         }
+
+        private void Close()
+        {
+            //TODO: implement
+        }
+
+        public string Phrase => _phrase.Value;
+        public int Complexity => _complexity.Value;
+        public string Description => _description.Value;
+
+        public PhraseItem PhraseItem { get; set; }
 
         public Pack SelectedPack { get; set; }
 

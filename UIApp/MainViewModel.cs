@@ -9,7 +9,8 @@ namespace UIApp
 {
     public class MainViewModel : ReactiveObject
     {
-        private readonly int _defaultPackId = 1;
+        private readonly int _defaultPackId = 20;
+        private string _selectedAuthor = "zhadko";
         private readonly ObservableAsPropertyHelper<ReactiveList<PhraseItem>> _phrases;
         private readonly IPackService _service = new PackService();
 
@@ -39,7 +40,7 @@ namespace UIApp
         private void EditPhrase(PhraseItem phraseItem)
         {
             //TODO: Rewrite with DI
-            var editViewModel = new EditingViewModel(phraseItem);
+            var editViewModel = new EditingViewModel(_selectedPack, phraseItem, _selectedAuthor);
             var editView = new EditingView(editViewModel);
             editView.ShowDialog();
         }
