@@ -5,19 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.5.1" />
     <PackageReference Include="JetBrains.Annotations" Version="11.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="System.Net.Http" Version="4.3.2" />
     <PackageReference Include="System.Net.Requests" Version="4.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Avalonia.ReactiveUI">
-      <HintPath>C:\Users\user\.nuget\packages\avalonia\0.5.1\lib\netcoreapp1.0\Avalonia.ReactiveUI.dll</HintPath>
-    </Reference>
-    <Reference Include="Splat">
-      <HintPath>C:\Users\user\.nuget\packages\splat\2.0.0\lib\netstandard1.1\Splat.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
