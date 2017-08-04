@@ -13,16 +13,21 @@ namespace UIApp
         private ObservableAsPropertyHelper<string> _phrase;
         private ObservableAsPropertyHelper<int> _complexity;
         private ObservableAsPropertyHelper<string> _description;
+        private PhraseItem _oldPhrase;
+
+        public event Action Close;
 
         public EditingViewModel(Pack selectedPack, PhraseItem phraseItem, string author)
         {
             _selectedPack = selectedPack;
             _author = author;
+            _oldPhrase = phraseItem?.Clone();
             
             //TODO: Do we really need so complex initialization?
             _phrase = this.WhenAnyValue(vm => vm.PhraseItem).Select(p => p.Phrase).ToProperty(this, vm => vm.Phrase);
             _complexity = this.WhenAnyValue(vm => vm.PhraseItem).Select(p => (int)p.Complexity).ToProperty(this, vm => vm.Complexity);
             _description = this.WhenAnyValue(vm => vm.PhraseItem).Select(p => p.Description).ToProperty(this, vm => vm.Description);
+
 
             PhraseItem = phraseItem;
             SaveCommand = ReactiveCommand.Create();
@@ -30,20 +35,26 @@ namespace UIApp
             {
                 if (Save())
                 {
-                    Close();
+                    Close?.Invoke();
                 }
             });
         }
 
         private bool Save()
         {
+            string result;
+            if(_oldPhrase == null)
+            {
+                result = _service.AddPhraseAsync(_selectedPack.Id, PhraseItem, _author).Result;
+            }
+            else
+            {
+                result = _service.EditPhraseAsync(_selectedPack.Id, _oldPhrase, PhraseItem, _author).Result;
+            }
             return true;
         }
 
-        private void Close()
-        {
-            //TODO: implement
-        }
+        
 
         public string Phrase => _phrase.Value;
         public int Complexity => _complexity.Value;

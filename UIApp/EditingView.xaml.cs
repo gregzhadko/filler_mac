@@ -11,7 +11,16 @@ namespace UIApp
             InitializeComponent();
             this.AttachDevTools();
 
+            viewModel.Close += Close;
             DataContext = viewModel;
+
+            Closed += EditingView_Closed;
+            
+        }
+
+        private void EditingView_Closed(object sender, System.EventArgs e)
+        {
+            ((EditingViewModel)DataContext).Close -= Close;
         }
 
         private void InitializeComponent()

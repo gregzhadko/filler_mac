@@ -10,7 +10,7 @@ namespace Model
         Task<string> DeletePhraseAsync(int packId, [NotNull]string phrase, [NotNull]string author);
         Task EditPackAsync(int id, [NotNull]string name, [NotNull]string description);
 
-        Task EditPhraseAsync(int packId, [NotNull]PhraseItem oldPhrase, [NotNull]PhraseItem newPhrase, [NotNull]string selectedAuthor);
+        Task<string> EditPhraseAsync(int packId, [NotNull]PhraseItem oldPhrase, [NotNull]PhraseItem newPhrase, [NotNull]string selectedAuthor);
 
         Task ReviewPhraseAsync(int packId, [NotNull]PhraseItem phrase, [NotNull]string reviewerName, State state);
         Task<IEnumerable<Pack>> GetAllPacksInfoAsync();

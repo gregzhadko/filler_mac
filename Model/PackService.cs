@@ -58,7 +58,7 @@ namespace Model
             await GetResponseAsync($"updatePackInfo?id={id}&name={name}&description={description}", 8091).ConfigureAwait(false);
         }
 
-        public async Task EditPhraseAsync(int packId, PhraseItem oldPhrase, PhraseItem newPhrase, string selectedAuthor)
+        public async Task<string> EditPhraseAsync(int packId, PhraseItem oldPhrase, PhraseItem newPhrase, string selectedAuthor)
         {
             if (oldPhrase.Phrase != newPhrase.Phrase)
             {
@@ -69,10 +69,12 @@ namespace Model
                 Math.Abs(oldPhrase.Complexity - newPhrase.Complexity) > 0.01 ||
                 !string.Equals(oldPhrase.Description, newPhrase.Description, StringComparison.Ordinal))
             {
-                await GetResponseAsync(
+                return await GetResponseAsync(
                     $"addPackWordDescription?id={packId}&word={newPhrase.Phrase}&description={newPhrase.Description}&level={newPhrase.Complexity}&author={selectedAuthor}",
                     8091).ConfigureAwait(false);
             }
+
+            return await new Task<string>(() => "");
         }
 
         public Task ReviewPhraseAsync(int packId, PhraseItem phrase, string reviewerName, State state)
