@@ -33,9 +33,10 @@ namespace UIApp
             NewPhraseCommand = ReactiveCommand.Create();
             NewPhraseCommand.Subscribe(_ =>
             {
-                EditPhrase(new PhraseItem());
+                EditPhrase(null);
             });
         }
+
 
         private void EditPhrase(PhraseItem phraseItem)
         {

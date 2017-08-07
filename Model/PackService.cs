@@ -24,11 +24,11 @@ namespace Model
             Password = settings[2];
         }
 
-        public Task<string> AddPhraseAsync(int packId, PhraseItem phrase, string author)
+        public async Task<string> AddPhraseAsync(int packId, PhraseItem phrase, string author)
         {
-            return GetResponseAsync(
+            return await GetResponseAsync(
                 $"addPackWordDescription?id={packId}&word={phrase.Phrase}&description={phrase.Description}&level={phrase.Complexity}&author={author}",
-                8091);
+                8091).ConfigureAwait(false);
         }
 
         public Task<string> DeletePhraseAsync(int packId, string phrase, string author) => GetResponseAsync(

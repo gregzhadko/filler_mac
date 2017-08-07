@@ -22,11 +22,19 @@ namespace UIApp
             _selectedPack = selectedPack;
             _author = author;
             _oldPhrase = phraseItem?.Clone();
-            
+
+          
             //TODO: Do we really need so complex initialization?
-            _phrase = this.WhenAnyValue(vm => vm.PhraseItem).Select(p => p.Phrase).ToProperty(this, vm => vm.Phrase);
-            _complexity = this.WhenAnyValue(vm => vm.PhraseItem).Select(p => (int)p.Complexity).ToProperty(this, vm => vm.Complexity);
-            _description = this.WhenAnyValue(vm => vm.PhraseItem).Select(p => p.Description).ToProperty(this, vm => vm.Description);
+            _phrase = this.WhenAnyValue(vm => vm.PhraseItem).Select(p => p?.Phrase).ToProperty(this, vm => vm.Phrase);
+            _complexity = this.WhenAnyValue(vm => vm.PhraseItem).Select(p =>
+            {
+                if (p?.Complexity != null)
+                {
+                    return (int) p.Complexity;
+                }
+                return 1;
+            }).ToProperty(this, vm => vm.Complexity);
+            _description = this.WhenAnyValue(vm => vm.PhraseItem).Select(p => p?.Description).ToProperty(this, vm => vm.Description);
 
 
             PhraseItem = phraseItem;
@@ -42,19 +50,13 @@ namespace UIApp
 
         private bool Save()
         {
-            string result;
-            if(_oldPhrase == null)
-            {
-                result = _service.AddPhraseAsync(_selectedPack.Id, PhraseItem, _author).Result;
-            }
-            else
-            {
-                result = _service.EditPhraseAsync(_selectedPack.Id, _oldPhrase, PhraseItem, _author).Result;
-            }
+            var result = _oldPhrase == null
+                ? _service.AddPhraseAsync(_selectedPack.Id, PhraseItem, _author).Result
+                : _service.EditPhraseAsync(_selectedPack.Id, _oldPhrase, PhraseItem, _author).Result;
             return true;
         }
 
-        
+
 
         public string Phrase => _phrase.Value;
         public int Complexity => _complexity.Value;
