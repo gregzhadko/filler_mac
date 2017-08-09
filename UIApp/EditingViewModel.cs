@@ -23,56 +23,60 @@ namespace UIApp
             _selectedPack = selectedPack;
             _author = author;
             _oldPhrase = phraseItem?.Clone();
-            PhraseItem = phraseItem ?? new PhraseItem();
+            if (phraseItem != null)
+            {
+                Phrase = phraseItem.Phrase;
+                Complexity = (int)phraseItem.Complexity;
+                Description = phraseItem.Description;
+            }
             SaveCommand = ReactiveCommand.Create();
             SaveCommand.Subscribe(_ =>
             {
-                if (Save())
+                if (!Save(out string message))
+                {
+                    ShowDialog(message);
+                }
+                else
                 {
                     Close?.Invoke();
                 }
             });
         }
 
-        private bool Save()
+        private void ShowDialog(string message)
         {
-            var result = _oldPhrase == null
-                ? _service.AddPhraseAsync(_selectedPack.Id, PhraseItem, _author).Result
-                : _service.EditPhraseAsync(_selectedPack.Id, _oldPhrase, PhraseItem, _author).Result;
-            return true;
+            
+        }
+
+        private bool Save(out string message)
+        {
+            var phraseItem = new PhraseItem {Phrase = Phrase, Complexity = Complexity, Description = Description};
+            message = _oldPhrase == null
+                ? _service.AddPhraseAsync(_selectedPack.Id, phraseItem, _author).Result
+                : _service.EditPhraseAsync(_selectedPack.Id, _oldPhrase, phraseItem, _author).Result;
+            if (message.Trim() == "{\"result\": true}")
+            {
+                return true;
+            }
+            return false;
         }
 
 
 
         public string Phrase
         {
-            get { return _phrase; }
-            set { this.RaiseAndSetIfChanged(ref _phrase, value); }
+            get => _phrase;
+            set => this.RaiseAndSetIfChanged(ref _phrase, value);
         }
         public int Complexity
         {
-            get { return _complexity; }
-            set { this.RaiseAndSetIfChanged(ref _complexity, value); }
+            get => _complexity;
+            set => this.RaiseAndSetIfChanged(ref _complexity, value);
         }
         public string Description
         {
-            get { return _description; }
-            set { this.RaiseAndSetIfChanged(ref _description, value); }
-        }
-
-        public PhraseItem PhraseItem
-        {
-            get
-            {
-                return _phraseItem;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _phraseItem, value);
-                Phrase = _phraseItem.Phrase;
-                Complexity = (int)_phraseItem.Complexity;
-                Description = _phraseItem.Description;
-            }
+            get => _description;
+            set => this.RaiseAndSetIfChanged(ref _description, value);
         }
 
         public Pack SelectedPack { get; set; }
