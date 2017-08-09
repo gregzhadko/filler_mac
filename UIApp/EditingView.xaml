@@ -1,7 +1,7 @@
 ﻿<Window
     xmlns="https://github.com/avaloniaui"
-    MinWidth="300"
-    MinHeight="200">
+    MinWidth="200"
+    MinHeight="150">
     <Grid Margin="7">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -13,16 +13,19 @@
             Grid.Row="0"
             Margin="5"
             Orientation="Horizontal">
-            <TextBlock>The phraseItem from pack</TextBlock>
+            <TextBlock>Selected pack</TextBlock>
             <TextBlock Text="{Binding SelectedPack}" />
         </StackPanel>
         <StackPanel
             Grid.Row="1"
             Margin="5"
             Orientation="Horizontal">
-            <TextBlock Margin="0,5,5,0">PhraseItem:</TextBlock>
-            <TextBox MinWidth="200" Text="{Binding Phrase}" />
-            <TextBlock Margin="20,5,0,0">PhraseItem:</TextBlock>
+            <TextBlock Margin="0,5,5,0">Phrase:</TextBlock>
+            <TextBox
+                MinWidth="200"
+                Margin="5,0"
+                Text="{Binding Phrase}" />
+            <TextBlock Margin="10,5,5,5">Complexity:</TextBlock>
             <DropDown SelectedItem="{Binding Complexity}">
                 <DropDownItem>1</DropDownItem>
                 <DropDownItem>2</DropDownItem>
@@ -42,7 +45,10 @@
             Grid.Row="3"
             HorizontalAlignment="Right"
             Orientation="Horizontal">
-            <Button Command="{Binding SaveCommand}" Content="Save" />
+            <Button
+                Padding="10,2"
+                Command="{Binding SaveCommand}"
+                Content="Save" />
         </StackPanel>
     </Grid>
 </Window>

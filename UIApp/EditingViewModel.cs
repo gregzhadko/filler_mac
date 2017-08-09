@@ -10,10 +10,11 @@ namespace UIApp
         private readonly Pack _selectedPack;
         private readonly string _author;
         private IPackService _service = new PackService();
-        private ObservableAsPropertyHelper<string> _phrase;
-        private ObservableAsPropertyHelper<int> _complexity;
-        private ObservableAsPropertyHelper<string> _description;
+        private string _phrase;
+        private int _complexity;
+        private string _description;
         private PhraseItem _oldPhrase;
+        private PhraseItem _phraseItem;
 
         public event Action Close;
 
@@ -22,22 +23,7 @@ namespace UIApp
             _selectedPack = selectedPack;
             _author = author;
             _oldPhrase = phraseItem?.Clone();
-
-          
-            //TODO: Do we really need so complex initialization?
-            _phrase = this.WhenAnyValue(vm => vm.PhraseItem).Select(p => p?.Phrase).ToProperty(this, vm => vm.Phrase);
-            _complexity = this.WhenAnyValue(vm => vm.PhraseItem).Select(p =>
-            {
-                if (p?.Complexity != null)
-                {
-                    return (int) p.Complexity;
-                }
-                return 1;
-            }).ToProperty(this, vm => vm.Complexity);
-            _description = this.WhenAnyValue(vm => vm.PhraseItem).Select(p => p?.Description).ToProperty(this, vm => vm.Description);
-
-
-            PhraseItem = phraseItem;
+            PhraseItem = phraseItem ?? new PhraseItem();
             SaveCommand = ReactiveCommand.Create();
             SaveCommand.Subscribe(_ =>
             {
@@ -58,11 +44,36 @@ namespace UIApp
 
 
 
-        public string Phrase => _phrase.Value;
-        public int Complexity => _complexity.Value;
-        public string Description => _description.Value;
+        public string Phrase
+        {
+            get { return _phrase; }
+            set { this.RaiseAndSetIfChanged(ref _phrase, value); }
+        }
+        public int Complexity
+        {
+            get { return _complexity; }
+            set { this.RaiseAndSetIfChanged(ref _complexity, value); }
+        }
+        public string Description
+        {
+            get { return _description; }
+            set { this.RaiseAndSetIfChanged(ref _description, value); }
+        }
 
-        public PhraseItem PhraseItem { get; set; }
+        public PhraseItem PhraseItem
+        {
+            get
+            {
+                return _phraseItem;
+            }
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _phraseItem, value);
+                Phrase = _phraseItem.Phrase;
+                Complexity = (int)_phraseItem.Complexity;
+                Description = _phraseItem.Description;
+            }
+        }
 
         public Pack SelectedPack { get; set; }
 
