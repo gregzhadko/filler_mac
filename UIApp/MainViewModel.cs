@@ -41,12 +41,9 @@ namespace UIApp
         private async void EditPhrase(PhraseItem phraseItem)
         {
             //TODO: Rewrite with DI
-            var editViewModel = new EditingViewModel(_selectedPack, phraseItem, _selectedAuthor);
+            var editViewModel = new EditingViewModel(_selectedPack, phraseItem, _selectedAuthor, _phrases);
             var editView = new EditingView(editViewModel);
             await editView.ShowDialog().ConfigureAwait(false);
-            Phrases.Reset();
-
-
         }
 
         public ReactiveList<PhraseItem> Phrases => _phrases.Value;

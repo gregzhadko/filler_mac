@@ -12,7 +12,7 @@ namespace Model
 
         public string Description { get; set; }
 
-        public IList<PhraseItem> Phrases { get; set; } = new List<PhraseItem>();
+        public ReactiveList<PhraseItem> Phrases { get; set; } = new ReactiveList<PhraseItem>();
 
         public override string ToString() => Name;
 

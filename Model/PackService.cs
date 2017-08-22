@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using ReactiveUI;
 
 namespace Model
 {
@@ -107,11 +108,7 @@ namespace Model
             var response = await GetResponseAsync($"getPack?id={id}", 8081).ConfigureAwait(false);
 
             var pack = JsonConvert.DeserializeObject<Pack>(response);
-            if (pack.Phrases == null)
-            {
-                pack.Phrases = new List<PhraseItem>();
-            }
-            pack.Phrases = pack.Phrases.OrderBy(p => p.Phrase).ToList();
+            pack.Phrases = new ReactiveList<PhraseItem>(pack.Phrases.OrderBy(p => p.Phrase));
             return pack;
         }
 

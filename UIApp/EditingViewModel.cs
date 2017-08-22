@@ -9,6 +9,7 @@ namespace UIApp
     {
         private readonly Pack _selectedPack;
         private readonly string _author;
+        private readonly ObservableAsPropertyHelper<ReactiveList<PhraseItem>> _phrases; //TODO: bullshit, I need to remove it
         private IPackService _service = new PackService();
         private string _phrase;
         private int _complexity;
@@ -19,10 +20,11 @@ namespace UIApp
 
         public event Action Close;
 
-        public EditingViewModel(Pack selectedPack, PhraseItem phraseItem, string author)
+        public EditingViewModel(Pack selectedPack, PhraseItem phraseItem, string author, ObservableAsPropertyHelper<ReactiveList<PhraseItem>> phrases)
         {
             _selectedPack = selectedPack;
             _author = author;
+            _phrases = phrases;
             _oldPhrase = phraseItem?.Clone();
             if (phraseItem != null)
             {
@@ -86,7 +88,7 @@ namespace UIApp
                 : _service.EditPhraseAsync(_selectedPack.Id, _oldPhrase, phraseItem, _author).Result;
             if (message.Trim() == "{\"result\": true}")
             {
-                _selectedPack.Phrases.Add(phraseItem);
+                _phrases.Value.Add(phraseItem);
                 return true;
             }
 
