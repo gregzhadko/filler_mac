@@ -1,12 +1,15 @@
 ﻿<Window
     xmlns="https://github.com/avaloniaui"
+    Width="400"
+    Height="250"
     MinWidth="200"
-    MinHeight="150">
+    MinHeight="250">
     <Grid Margin="7">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <StackPanel
@@ -26,7 +29,7 @@
                 Margin="5,0"
                 Text="{Binding Phrase}" />
             <TextBlock Margin="10,5,5,5">Complexity:</TextBlock>
-            <DropDown SelectedItem="{Binding Complexity}">
+            <DropDown SelectedIndex="0" SelectedItem="{Binding Complexity}">
                 <DropDownItem>1</DropDownItem>
                 <DropDownItem>2</DropDownItem>
                 <DropDownItem>3</DropDownItem>
@@ -41,11 +44,23 @@
             <TextBlock>Description:</TextBlock>
             <TextBox Height="50" Text="{Binding Description}" />
         </StackPanel>
-        <StackPanel
+
+        <TextBlock
             Grid.Row="3"
+            FontSize="15"
+            Foreground="Red"
+            Text="{Binding ErrorMessage}" />
+        <StackPanel
+            Grid.Row="4"
             HorizontalAlignment="Right"
             Orientation="Horizontal">
             <Button
+                Margin="5"
+                Padding="10,2"
+                Command="{Binding CloseCommand}"
+                Content="Cancel" />
+            <Button
+                Margin="5"
                 Padding="10,2"
                 Command="{Binding SaveCommand}"
                 Content="Save" />

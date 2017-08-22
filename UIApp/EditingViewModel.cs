@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Reactive.Linq;
 using Model;
 using ReactiveUI;
+using System.Linq;
 
 namespace UIApp
 {
@@ -15,6 +15,7 @@ namespace UIApp
         private string _description;
         private PhraseItem _oldPhrase;
         private PhraseItem _phraseItem;
+        private string _errorMessage;
 
         public event Action Close;
 
@@ -29,35 +30,66 @@ namespace UIApp
                 Complexity = (int)phraseItem.Complexity;
                 Description = phraseItem.Description;
             }
+
             SaveCommand = ReactiveCommand.Create();
             SaveCommand.Subscribe(_ =>
             {
                 if (!Save(out string message))
                 {
-                    ShowDialog(message);
+                    ShowError(message);
                 }
                 else
                 {
                     Close?.Invoke();
                 }
             });
+
+            CloseCommand = ReactiveCommand.Create();
+            CloseCommand.Subscribe(_ =>
+            {
+                Close?.Invoke();
+            });
+
         }
 
-        private void ShowDialog(string message)
-        {
             
+
+        private ReactiveCommand<object> SaveCommand { get; }
+        public ReactiveCommand<object> CloseCommand { get; }
+
+
+        private void ShowError(string message)
+        {
+            ErrorMessage = message;
         }
 
         private bool Save(out string message)
         {
-            var phraseItem = new PhraseItem {Phrase = Phrase, Complexity = Complexity, Description = Description};
+            var phraseItem = new PhraseItem { Phrase = Phrase, Complexity = Complexity, Description = Description };
+
+            StringUtils.FormatPhrase(phraseItem);
+
+            if (String.IsNullOrWhiteSpace(phraseItem.Phrase)) //TOFO: fix it, textblock should be highlighted.
+            {
+                message = "Phrase can't be empty!";
+                return false;
+            }
+
+            if(_selectedPack.Phrases.Select(p => p.Phrase).Contains(phraseItem.Phrase))
+            {
+                message = "Phrase is already in the pack";
+                return false;
+            }
+
             message = _oldPhrase == null
                 ? _service.AddPhraseAsync(_selectedPack.Id, phraseItem, _author).Result
                 : _service.EditPhraseAsync(_selectedPack.Id, _oldPhrase, phraseItem, _author).Result;
             if (message.Trim() == "{\"result\": true}")
             {
+                _selectedPack.Phrases.Add(phraseItem);
                 return true;
             }
+
             return false;
         }
 
@@ -66,7 +98,10 @@ namespace UIApp
         public string Phrase
         {
             get => _phrase;
-            set => this.RaiseAndSetIfChanged(ref _phrase, value);
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _phrase, value);
+            }
         }
         public int Complexity
         {
@@ -79,8 +114,9 @@ namespace UIApp
             set => this.RaiseAndSetIfChanged(ref _description, value);
         }
 
-        public Pack SelectedPack { get; set; }
-
-        private ReactiveCommand<object> SaveCommand { get; }
+        public string ErrorMessage {
+            get => _errorMessage;
+            set => this.RaiseAndSetIfChanged(ref _errorMessage, value);
+        }
     }
 }
