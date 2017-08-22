@@ -26,6 +26,11 @@ namespace Model
 
         public async Task<string> AddPhraseAsync(int packId, PhraseItem phrase, string author)
         {
+            if(phrase.Complexity < 1 || String.IsNullOrWhiteSpace(phrase.Description))
+            {
+                return await GetResponseAsync($"addPackWord?id={packId}&word={phrase.Phrase}&author={author}", 8091).ConfigureAwait(false);
+            }
+
             return await GetResponseAsync(
                 $"addPackWordDescription?id={packId}&word={phrase.Phrase}&description={phrase.Description}&level={phrase.Complexity}&author={author}",
                 8091).ConfigureAwait(false);
