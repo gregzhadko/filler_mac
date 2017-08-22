@@ -43,7 +43,7 @@ namespace UIApp
             //TODO: Rewrite with DI
             var editViewModel = new EditingViewModel(_selectedPack, phraseItem, _selectedAuthor);
             var editView = new EditingView(editViewModel);
-            await editView.ShowDialog();
+            await editView.ShowDialog().ConfigureAwait(false);
             Phrases.Reset();
 
 
