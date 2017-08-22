@@ -1,9 +1,9 @@
 ﻿<Window
     xmlns="https://github.com/avaloniaui"
     Width="400"
-    Height="250"
+    Height="270"
     MinWidth="200"
-    MinHeight="250">
+    MinHeight="270">
     <Grid Margin="7">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -39,7 +39,11 @@
             Margin="5"
             Orientation="Vertical">
             <TextBlock>Description:</TextBlock>
-            <TextBox Height="50" Text="{Binding Description}" />
+            <TextBox
+                Height="70"
+                AcceptsReturn="True"
+                Text="{Binding Description}"
+                TextWrapping="Wrap" />
         </StackPanel>
 
         <TextBlock
