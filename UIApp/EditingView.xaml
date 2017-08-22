@@ -29,13 +29,10 @@
                 Margin="5,0"
                 Text="{Binding Phrase}" />
             <TextBlock Margin="10,5,5,5">Complexity:</TextBlock>
-            <DropDown SelectedIndex="0" SelectedItem="{Binding Complexity}">
-                <DropDownItem>1</DropDownItem>
-                <DropDownItem>2</DropDownItem>
-                <DropDownItem>3</DropDownItem>
-                <DropDownItem>4</DropDownItem>
-                <DropDownItem>5</DropDownItem>
-            </DropDown>
+            <DropDown
+                Items="{Binding Complexities}"
+                SelectedIndex="0"
+                SelectedItem="{Binding Complexity}" />
         </StackPanel>
         <StackPanel
             Grid.Row="2"

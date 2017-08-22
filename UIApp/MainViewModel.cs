@@ -17,6 +17,7 @@ namespace UIApp
         private ObservableCollection<Pack> _packs;
 
         private Pack _selectedPack;
+        private PhraseItem _selectedPhrase;
 
         public MainViewModel()
         {
@@ -35,15 +36,23 @@ namespace UIApp
             {
                 EditPhrase(null);
             });
+
+            EditPhraseCommand = ReactiveCommand.Create();
+            EditPhraseCommand.Subscribe(_ =>
+            {
+                if (SelectedPhrase != null)
+                {
+                    EditPhrase(SelectedPhrase);
+                }
+            });
         }
 
-
-        private async void EditPhrase(PhraseItem phraseItem)
+        private void EditPhrase(PhraseItem phraseItem)
         {
             //TODO: Rewrite with DI
             var editViewModel = new EditingViewModel(_selectedPack, phraseItem, _selectedAuthor, _phrases);
             var editView = new EditingView(editViewModel);
-            await editView.ShowDialog().ConfigureAwait(false);
+            editView.ShowDialog();
         }
 
         public ReactiveList<PhraseItem> Phrases => _phrases.Value;
@@ -60,7 +69,14 @@ namespace UIApp
             set => this.RaiseAndSetIfChanged(ref _packs, value);
         }
 
+        public PhraseItem SelectedPhrase
+        {
+            get => _selectedPhrase;
+            set => this.RaiseAndSetIfChanged(ref _selectedPhrase, value);
+        }
+
         public ReactiveCommand<object> NewPhraseCommand { get; }
+        public ReactiveCommand<object> EditPhraseCommand { get; }
 
         private void Init()
         {

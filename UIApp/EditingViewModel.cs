@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Model;
 using ReactiveUI;
 using System.Linq;
@@ -15,8 +17,9 @@ namespace UIApp
         private int _complexity;
         private string _description;
         private PhraseItem _oldPhrase;
-        private PhraseItem _phraseItem;
         private string _errorMessage;
+        private bool _isEditing;
+        private ReactiveList<int> _complexities = new ReactiveList<int>(new List<int>{1, 2, 3, 4, 5});
 
         public event Action Close;
 
@@ -25,8 +28,9 @@ namespace UIApp
             _selectedPack = selectedPack;
             _author = author;
             _phrases = phrases;
-            _oldPhrase = phraseItem?.Clone();
-            if (phraseItem != null)
+            _oldPhrase = phraseItem;
+            _isEditing = phraseItem != null;
+            if (_isEditing)
             {
                 Phrase = phraseItem.Phrase;
                 Complexity = (int)phraseItem.Complexity;
@@ -54,11 +58,14 @@ namespace UIApp
 
         }
 
-            
+        public ReactiveList<int> Complexities
+        {
+            get { return _complexities; }
+            set { this.RaiseAndSetIfChanged(ref _complexities, value); }
+        }
 
         private ReactiveCommand<object> SaveCommand { get; }
         public ReactiveCommand<object> CloseCommand { get; }
-
 
         private void ShowError(string message)
         {
@@ -77,7 +84,7 @@ namespace UIApp
                 return false;
             }
 
-            if(_selectedPack.Phrases.Select(p => p.Phrase).Contains(phraseItem.Phrase))
+            if(!_isEditing && _selectedPack.Phrases.Select(p => p.Phrase).Contains(phraseItem.Phrase))
             {
                 message = "Phrase is already in the pack";
                 return false;
@@ -88,22 +95,26 @@ namespace UIApp
                 : _service.EditPhraseAsync(_selectedPack.Id, _oldPhrase, phraseItem, _author).Result;
             if (message.Trim() == "{\"result\": true}")
             {
-                _phrases.Value.Add(phraseItem);
+                if (!_isEditing)
+                {
+                    _phrases.Value.Add(phraseItem);
+                }
+                else
+                {
+                    var index = _phrases.Value.IndexOf(_oldPhrase);
+                    _phrases.Value[index] = phraseItem;
+                }
+
                 return true;
             }
 
             return false;
         }
 
-
-
         public string Phrase
         {
             get => _phrase;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _phrase, value);
-            }
+            set => this.RaiseAndSetIfChanged(ref _phrase, value);
         }
         public int Complexity
         {

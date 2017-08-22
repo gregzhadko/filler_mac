@@ -10,7 +10,14 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal">
-            <Button Command="{Binding NewPhraseCommand}" Content="New Phrase" />
+            <Button
+                Margin="5"
+                Command="{Binding NewPhraseCommand}"
+                Content="New Phrase" />
+            <Button
+                Margin="5"
+                Command="{Binding EditPhraseCommand}"
+                Content="Edit Phrase" />
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal">
@@ -24,6 +31,8 @@
             Grid.Row="2"
             Margin="0,5"
             FontSize="20"
-            Items="{Binding Path=Phrases}" />
+            Items="{Binding Path=Phrases}"
+            SelectedItem="{Binding SelectedPhrase}"
+            SelectionMode="Single" />
     </Grid>
 </Window>
