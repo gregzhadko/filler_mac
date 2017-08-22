@@ -26,6 +26,8 @@
                 Margin="10,0,0,0"
                 Items="{Binding Path=Packs}"
                 SelectedItem="{Binding Path=SelectedPack}" />
+            <TextBlock Margin="20,6,0,0" Text="Author" />
+            <TextBox MinWidth="100" Margin="5,0,0,0" Text="{Binding SelectedAuthor}"/>
         </StackPanel>
         <ListBox
             Grid.Row="2"

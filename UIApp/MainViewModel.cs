@@ -9,7 +9,7 @@ namespace UIApp
 {
     public class MainViewModel : ReactiveObject
     {
-        private readonly int _defaultPackId = 20;
+        private const int DefaultPackId = 20;
         private string _selectedAuthor = "zhadko";
         private readonly ObservableAsPropertyHelper<ReactiveList<PhraseItem>> _phrases;
         private readonly IPackService _service = new PackService();
@@ -69,6 +69,11 @@ namespace UIApp
             set => this.RaiseAndSetIfChanged(ref _packs, value);
         }
 
+        public string SelectedAuthor {
+            get => _selectedAuthor;
+            set => this.RaiseAndSetIfChanged(ref _selectedAuthor, value);
+        }
+
         public PhraseItem SelectedPhrase
         {
             get => _selectedPhrase;
@@ -83,7 +88,7 @@ namespace UIApp
             var packsTask = _service.GetAllPacksInfoAsync();
             Packs = new ObservableCollection<Pack>(packsTask.Result.OrderBy(p => p.Id));
 
-            var packTask = _service.GetPackByIdAsync(_defaultPackId);
+            var packTask = _service.GetPackByIdAsync(DefaultPackId);
 
             var selectedPack = Packs.First(p => p.Id == packTask.Result.Id);
             selectedPack.Phrases = packTask.Result.Phrases;
