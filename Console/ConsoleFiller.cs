@@ -126,16 +126,16 @@ namespace Filler_Mac
             phrase.FormatPhrase();
             phrase.UpdateAuthor(_selectedAuthor);
 
-            var responce = _service.AddPhraseAsync(_selectedPack.Id, phrase).Result;
+            var response = _service.AddPhraseAsync(_selectedPack.Id, phrase, _selectedAuthor).Result;
 
             //Исправить эту дичь
-            if (responce.Trim() == "{\"result\": true}")
+            if (response.Trim() == "{\"result\": true}")
             {
                 Console.WriteLine($"Word {phrase.Phrase} was saved");
             }
             else
             {
-                Console.WriteLine($"Error on the word saving: {responce}");
+                Console.WriteLine($"Error on the word saving: {response}");
             }
         }
     }
