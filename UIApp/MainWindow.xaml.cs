@@ -18,5 +18,12 @@ namespace UIApp
         {
             AvaloniaXamlLoader.Load(this);
         }
+
+        protected override void HandleClosed()
+        {
+            ((MainViewModel) DataContext)?.OnClosed();
+
+            base.HandleClosed();
+        }
     }
 }

@@ -9,8 +9,7 @@ namespace UIApp
 {
     public class MainViewModel : ReactiveObject
     {
-        private const int DefaultPackId = 20;
-        private string _selectedAuthor = "zhadko";
+        private string _selectedAuthor = Settings.SelectedAuthor;
         private readonly ObservableAsPropertyHelper<ReactiveList<PhraseItem>> _phrases;
         private readonly IPackService _service = new PackService();
 
@@ -88,12 +87,17 @@ namespace UIApp
             var packsTask = _service.GetAllPacksInfoAsync();
             Packs = new ObservableCollection<Pack>(packsTask.Result.OrderBy(p => p.Id));
 
-            var packTask = _service.GetPackByIdAsync(DefaultPackId);
+            var packTask = _service.GetPackByIdAsync(Convert.ToInt32(Settings.SelectedPackId));
 
             var selectedPack = Packs.First(p => p.Id == packTask.Result.Id);
             selectedPack.Phrases = packTask.Result.Phrases;
             selectedPack.Description = packTask.Result.Description;
             SelectedPack = selectedPack;
+        }
+
+        public void OnClosed()
+        {
+            Settings.UpdateSettings(SelectedPack.Id.ToString(), SelectedAuthor);
         }
     }
 }

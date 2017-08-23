@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
 using ReactiveUI;
@@ -19,10 +20,9 @@ namespace Model
 
         static PackService()
         {
-            var settings = File.ReadAllLines("settings.txt");
-            Url = settings[0];
-            Username = settings[1];
-            Password = settings[2];
+            Url = Settings.Url;
+            Username = Settings.Username;
+            Password = Settings.Password;
         }
 
         public async Task<string> AddPhraseAsync(int packId, PhraseItem phrase, string author)
