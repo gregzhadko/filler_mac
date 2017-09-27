@@ -87,6 +87,11 @@ namespace Model
             return s;
         }
 
+        public static string ReplaceSemicolons(this string s)
+        {
+            return s.Replace(";", "%3B");
+        }
+
         public static string FormatDescription(string description)
         {
             if (String.IsNullOrEmpty(description))

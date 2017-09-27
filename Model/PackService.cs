@@ -1,11 +1,9 @@
-﻿using JetBrains.Annotations;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
 using ReactiveUI;
@@ -27,13 +25,14 @@ namespace Model
 
         public async Task<string> AddPhraseAsync(int packId, PhraseItem phrase, string author)
         {
-            if(phrase.Complexity < 1 || String.IsNullOrWhiteSpace(phrase.Description))
+            if (phrase.Complexity < 1 || String.IsNullOrWhiteSpace(phrase.Description))
             {
-                return await GetResponseAsync($"addPackWord?id={packId}&word={phrase.Phrase}&author={author}", 8091).ConfigureAwait(false);
+                return await GetResponseAsync($"addPackWord?id={packId}&word={phrase.Phrase}&author={author}", 8091)
+                    .ConfigureAwait(false);
             }
 
             return await GetResponseAsync(
-                $"addPackWordDescription?id={packId}&word={phrase.Phrase}&description={phrase.Description}&level={phrase.Complexity}&author={author}",
+                $"addPackWordDescription?id={packId}&word={phrase.Phrase}&description={phrase.Description.ReplaceSemicolons()}&level={phrase.Complexity}&author={author}",
                 8091).ConfigureAwait(false);
         }
 
@@ -61,7 +60,7 @@ namespace Model
                 return;
             }
 
-            await GetResponseAsync($"updatePackInfo?id={id}&name={name}&description={description}", 8091).ConfigureAwait(false);
+            await GetResponseAsync($"updatePackInfo?id={id}&name={name}&description={description.ReplaceSemicolons()}", 8091).ConfigureAwait(false);
         }
 
         public async Task<string> EditPhraseAsync(int packId, PhraseItem oldPhrase, PhraseItem newPhrase, string selectedAuthor)
@@ -76,11 +75,11 @@ namespace Model
                 !string.Equals(oldPhrase.Description, newPhrase.Description, StringComparison.Ordinal))
             {
                 return await GetResponseAsync(
-                    $"addPackWordDescription?id={packId}&word={newPhrase.Phrase}&description={newPhrase.Description}&level={newPhrase.Complexity}&author={selectedAuthor}",
+                    $"addPackWordDescription?id={packId}&word={newPhrase.Phrase}&description={newPhrase.Description.ReplaceSemicolons()}&level={newPhrase.Complexity}&author={selectedAuthor}",
                     8091).ConfigureAwait(false);
             }
 
-            return await new Task<string>(() => "");
+            return await new Task<string>(() => "").ConfigureAwait(false);
         }
 
         public Task ReviewPhraseAsync(int packId, PhraseItem phrase, string reviewerName, State state)
